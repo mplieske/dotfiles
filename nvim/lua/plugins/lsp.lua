@@ -8,6 +8,7 @@ return {
         "hrsh7th/cmp-path",
         "hrsh7th/cmp-cmdline",
         "hrsh7th/nvim-cmp",
+        "L3MON4D3/LuaSnip",
     },
 
     config = function()
@@ -26,6 +27,8 @@ return {
                 "lua_ls",
                 "zls",
                 "bashls",
+                "yamlls",
+                "ast_grep",
             },
             handlers = {
                 function(server_name)
@@ -39,6 +42,21 @@ return {
                         root_dir = lspconfig.util.root_pattern(".git", "build.zig", "zls.json"),
                         settings = {
                             zls = {
+                                enable_inlay_hints = true,
+                                enable_snippets = true,
+                                warn_style = true,
+                            },
+                        },
+                    })
+                    vim.g.zig_fmt_parse_errors = 0
+                    vim.g.zig_fmt_autosave = 0
+                end,
+                ["ast_grep"] = function()
+                    local lspconfig = require("lspconfig")
+                    lspconfig.zls.setup({
+                        root_dir = lspconfig.util.root_pattern(".git", "main.c"),
+                        settings = {
+                            ["ast_grep"] = {
                                 enable_inlay_hints = true,
                                 enable_snippets = true,
                                 warn_style = true,
@@ -81,7 +99,10 @@ return {
             }),
             sources = cmp.config.sources({
                 { name = "nvim_lsp" },
+                { name = "yamlls" },
                 { name = "luasnip" },
+                { name = "bashls" },
+                { name = "ast_grep" },
             }, {
                 { name = "buffer" },
             })
